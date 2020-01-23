@@ -32,7 +32,7 @@ public class GameView extends SurfaceView implements Runnable {
     int screenX;
     int countMisses;
 
-    boolean flag = false;
+    int flag = 0;
 
     private boolean isGameOver;
 
@@ -84,19 +84,26 @@ public class GameView extends SurfaceView implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        switch (motionEvent.getAction()) {
+        int cnt = motionEvent.getPointerCount();
+        Log.e ("kek", ""+cnt);
+
+        switch (motionEvent.getActionMasked()) {
             case MotionEvent.ACTION_UP:
+                cnt = 0;
                 player.stopBoosting();
-                break;
-            case MotionEvent.ACTION_DOWN:
-                if (motionEvent.getX() > (float)screenX / 2) {
-                    player.setBoosting();
-                } else {
-                    flag = true;
-//                    bullets.add (new Bullet(context, player.getX(), player.getY(), player.getSpeed(), screenX));
-                }
-                break;
+                flag = 0;
         }
+        int flag_to_shoot = 0;
+        int flag_to_move = 0;
+        for (int i = 0; i < cnt; ++i) {
+            float t = motionEvent.getX (i);
+            if (t > (float)screenX / 2) ++flag_to_move;
+            else ++flag_to_shoot;
+        }
+        if (flag_to_shoot == 0) flag = 0;
+        else ++flag;
+        if (flag_to_move == 0) player.stopBoosting();
+        else player.setBoosting();
 
         if(isGameOver){
             if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
@@ -139,12 +146,10 @@ public class GameView extends SurfaceView implements Runnable {
                     player.getX(),
                     player.getY(),
                     paint);
-            if (flag) {
-                Log.e("kek", "create a bullet");
+            if (flag > 0) ++flag;
+            if (flag > 0 && flag % 3 == 0) {
                 bullets.add (new Bullet(this.context, player.getX() + 320, player.getY() + 50, player.getSpeed(), screenX));
-                Log.e ("kek1", ""+bullets.size());
             }
-            flag = false;
 
             if (!bullets.isEmpty())
                 for (Bullet b: bullets) {
