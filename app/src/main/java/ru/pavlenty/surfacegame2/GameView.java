@@ -26,7 +26,7 @@ public class GameView extends SurfaceView implements Runnable {
     private Canvas canvas;
     private SurfaceHolder surfaceHolder;
 
-    private ArrayList<Star> stars = new ArrayList<Star>();
+    private ArrayList<Star> stars = new ArrayList<>();
     private ArrayList<Bullet> bullets = new ArrayList<>();
 
     int screenX;
@@ -140,12 +140,15 @@ public class GameView extends SurfaceView implements Runnable {
                     player.getY(),
                     paint);
             if (flag) {
-                bullets.add (new Bullet(context, player.getX(), player.getY(), player.getSpeed(), screenX));
+                Log.e("kek", "create a bullet");
+                bullets.add (new Bullet(this.context, player.getX() + 320, player.getY() + 50, player.getSpeed(), screenX));
+                Log.e ("kek1", ""+bullets.size());
             }
             flag = false;
 
             if (!bullets.isEmpty())
                 for (Bullet b: bullets) {
+                    b.setSpeed(player.getSpeed() + 20);
                     canvas.drawBitmap(
                             b.getBitmap(),
                             b.getX(),
@@ -201,6 +204,7 @@ public class GameView extends SurfaceView implements Runnable {
         try {
             gameThread.join();
         } catch (InterruptedException e) {
+            Log.e ("oops", "lol");
         }
     }
 

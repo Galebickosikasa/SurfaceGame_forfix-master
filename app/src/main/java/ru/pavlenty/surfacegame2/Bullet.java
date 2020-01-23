@@ -17,7 +17,8 @@ public class Bullet {
         speed = playerSpeed + 10;
         maxX = mxX;
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet);
-        bitmap.setWidth(10);
+        bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+
     }
 
     int update () {
@@ -34,6 +35,10 @@ public class Bullet {
 
     int getY () {
         return y;
+    }
+
+    void setSpeed (int val) {
+        speed = val;
     }
 
     Bitmap getBitmap () {
